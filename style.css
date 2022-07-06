@@ -1,7 +1,7 @@
 body{
    color: aliceblue;
    background:#353839 ;
-   overflow-y: hidden;
+   /* overflow-y: hidden; */
 }
 
 a{
@@ -31,9 +31,8 @@ a:hover{
    grid-area: nav;
 }
 .display{
-   overflow-y: auto;
+
    grid-area: main;
-   border: 1px solid white;
    height: min(100%,80vh);
    width: min(100%,100%);
    padding: .5rem;

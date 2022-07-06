@@ -3,7 +3,7 @@ $.get(
   function (data) {}
 ).done((res) => {
   const show = res.data;
-
+   console.log(show)
   const arrayIterator =(key1, key2) =>{
    let output = ''
    for(let i = 0; i < anime[key1].length;i++){
