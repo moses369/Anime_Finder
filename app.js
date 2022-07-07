@@ -1,15 +1,14 @@
 let totalPages;
 let pages = document.querySelector(".pages");
 
-let url = `https://api.jikan.moe/v4/anime?type=tv,movie,ova,special`
-const displayAnime = (url) => { 
-  // if (url.includes("&page=")) {
-  //   const start = url.indexOf("&page");
-  //   const end = Qparams.length
-  //   const urlArr = url.split("");
-  //   urlArr.splice(start, end);
-  //   url = urlArr.join('').concat(Qparams)
-  // }
+let url = {
+  index:`https://api.jikan.moe/v4/anime?type=tv,movie,ova,special`,
+  genre:`https://api.jikan.moe/v4/anime`,
+}
+
+const displayAnime = (url, page) => { 
+    url += page
+  
   $.get(url, (data) => {
     console.log(url);
     console.log("api response", data);
@@ -80,11 +79,10 @@ const displayAnime = (url) => {
       i++;
     }
   });
-    pagination(totalPages,1)
+    
 };
 
 // PAGINATION
-displayAnime(url)
 
 const pageS = document.querySelector('#pageSearch')
 $('#pageS').on('submit',(e)=>{
@@ -148,11 +146,21 @@ function pagination(totalPages, page , query) {
       })> <span>Next</span><i class="fa-solid fa-angle-right"></i></button>`;
   }
   pages.innerHTML = btn;
-    let queryPage = `&page=${page}`
+  let pageQ = `&page=${page}`
+  if(url.index.length < url.genre.length){
+    displayAnime(url.genre, pageQ)
+  }else{
+    displayAnime(url.index, pageQ)
+  }
 }
+pagination(totalPages,1)
+// Changing url based on page
+// On click we get page number and pass in as url
+// how do we keep genre and add page number
+// 
+// function changePage(page,url){
 
-
-
+// }
 
 
 // SEARCH
@@ -192,9 +200,8 @@ dropdown.addEventListener("click", (e) => {
     $(".display-content").empty();
 
     console.log(query);
-    
-    displayAnime(url+query)
-
+    url.genre = url.index+query
+    pagination(totalPages,1)
   }
 });
 // displayAnime();
