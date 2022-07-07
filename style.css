@@ -96,12 +96,14 @@ a:hover{
 .display-content{
    width: 100%;
 }
-.pageNums{
+.pagination{
    display: flex;
    align-items: center;
    justify-content: center;
    width: 100%;
-  
+}
+.num.active{
+   background: #04AA6D;
 }
 .page.btn{
    align-self: center;

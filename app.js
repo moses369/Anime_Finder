@@ -1,15 +1,19 @@
-let noPageURL;
-const displayAnime = (Qparams) => {
-  if (!Qparams) Qparams = "";
-  let url = `https://api.jikan.moe/v4/anime?type=tv,movie,ova,special,ona${Qparams}`;
-  if (Qparams.includes("&page=")) {
-    let i = url.indexOf("&page");
-    noPageURL = url.substring(0, i);
-    url = noPageURL += Qparams;
-  }
+let totalPages;
+let pages = document.querySelector(".pages");
+
+let url = `https://api.jikan.moe/v4/anime?type=tv,movie,ova,special`
+const displayAnime = (url) => { 
+  // if (url.includes("&page=")) {
+  //   const start = url.indexOf("&page");
+  //   const end = Qparams.length
+  //   const urlArr = url.split("");
+  //   urlArr.splice(start, end);
+  //   url = urlArr.join('').concat(Qparams)
+  // }
   $.get(url, (data) => {
     console.log(url);
     console.log("api response", data);
+    totalPages = data.pagination.last_visible_page
   }).done((res) => {
     const show = res.data;
     const arrayIterator = (key1, key2) => {
@@ -25,6 +29,7 @@ const displayAnime = (Qparams) => {
     };
     let time = 0;
     let i = 1;
+    $(".display-content").empty()
     for (anime of show) {
       let themes = "";
       if (anime.themes) {
@@ -67,26 +72,94 @@ const displayAnime = (Qparams) => {
             </div>
             </div>
             `);
+      
       $result.appendTo(".display-content");
-
       if (anime.trailer.url) $(`#${i} .card-info`).append($trailer);
       $(".card").hide().fadeIn(time);
       time += 300;
       i++;
     }
   });
+    pagination(totalPages,1)
 };
 
 // PAGINATION
-$(".pageNums").on("click", "button", (e) => {
-  $(".display-content").empty();
-  const pageNum = e.target.innerText;
-  displayAnime(`&page=${pageNum}`);
-});
+displayAnime(url)
+
+const pageS = document.querySelector('#pageSearch')
+$('#pageS').on('submit',(e)=>{
+  e.preventDefault()
+  pagination(totalPages,pageS.valueAsNumber)
+  pageS.value = ''
+})
+function pagination(totalPages, page , query) {
+  let btn = "";
+  let beforePages = page - 1;
+  let afterPages = page + 1;
+  let activeBtn;
+  if (page > 1) {
+      btn += `<button class='prev' onclick=pagination(totalPages,${page - 1})>
+   <i class="fa-solid fa-angle-left"></i><span>Prev</span>
+ </button>`;
+  }
+  if (page > 2) {
+    btn += `<button class="num" data-page=${1}  onclick=pagination(totalPages,${1})>1</button>`;
+    if (page > 3) {
+      btn += `<button class="dot">...</button> `;
+    }
+  }
+  // SHOW HOW MANY PAGES BEFORE WHEN AT END
+  if (page === totalPages) {
+    beforePages = beforePages - 2;
+  } else if (page === totalPages - 1) {
+    beforePages = beforePages - 1;
+  }
+  // SHOW HOW MANY PAGES AFTER WHEN AT BEGINNING
+  if (page === 1) {
+    afterPages = afterPages + 2;
+  } else if (page === 2) {
+    afterPages = afterPages + 1;
+  }
+  // CREATE IN BETWEEN PAGES
+  for (let pageLength = beforePages; pageLength <= afterPages; pageLength++) {
+    if (pageLength > totalPages) {
+      continue;
+    }
+    if (pageLength === 0) {
+      pageLength = pageLength + 1;
+    }
+    if (page === pageLength) {
+      activeBtn = "active";
+    } else {
+      activeBtn = "";
+    }
+    btn += `<button class="num ${activeBtn}" data-page=${pageLength}  onclick=pagination(totalPages,${pageLength})>${pageLength}</button>`;
+  }
+
+  if (page < totalPages - 1 ) {
+    if (page < totalPages - 2) {
+      btn += `<button class="dot">...</button> `;
+    }
+    btn += `<button class="num" data-page=${totalPages} onclick=pagination(totalPages,${totalPages})>${totalPages}</button>`;
+  }
+  if (page < totalPages || page ) {
+      btn += `<button class='next' onclick=pagination(totalPages,${
+        page + 1
+      })> <span>Next</span><i class="fa-solid fa-angle-right"></i></button>`;
+  }
+  pages.innerHTML = btn;
+    let queryPage = `&page=${page}`
+}
+
+
+
+
 
 // SEARCH
 let query = "";
-$(".dropdown").on("click", (e) => {
+let dropdown = document.querySelector('.dropdown')
+dropdown.addEventListener("click", (e) => {
+  if(e.target.classList.contains('dropdown')){}
   const data = e.target.dataset.genre;
   const removeGenre = (data) => {
     const start = query.indexOf(data);
@@ -119,7 +192,9 @@ $(".dropdown").on("click", (e) => {
     $(".display-content").empty();
 
     console.log(query);
-    displayAnime(query);
+    
+    displayAnime(url+query)
+
   }
 });
-displayAnime();
+// displayAnime();
