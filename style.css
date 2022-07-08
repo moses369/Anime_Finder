@@ -20,7 +20,7 @@ a:hover{
    display: grid;
    grid-template-areas: 
    'nav nav nav nav nav nav nav nav'
-   'main main main main main main side side'
+   'main main main main main main main main'
    'footer footer footer footer footer footer footer footer';
    max-width: 100%;
    gap: 1rem;
