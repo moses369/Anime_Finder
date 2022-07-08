@@ -1,5 +1,6 @@
 *{
    box-sizing: border-box;
+   font-family: 'Arial'
 }
 body{
    color: aliceblue;
@@ -27,7 +28,7 @@ a:hover{
 
 .header{
    grid-area: nav;
-   height: min(30vh,30vh);
+   height: min(15vh,30vh);
    width: min(100%,100%);
 }
 h1{
@@ -36,8 +37,10 @@ h1{
    font-size: 4rem;
    text-align: center;
 }
-.nav{
-   grid-area: nav;
+.footer{
+   grid-area: footer;
+   text-align: center;
+   border-top: 1px solid aliceblue;
 }
 .dropdown {
    display: inline-block;
@@ -74,12 +77,14 @@ h1{
 }
 .up{
    color: aliceblue;
-   width: 1rem;
+   width: 3rem;
    font-size: 1rem;
 }
 .dropdown-content a:first-child:hover{
    border: none;
    cursor:default;
+   background-color: #3e8e41;
+   color: aliceblue !important;
 
  }
  .dropdown-content a:hover,
@@ -168,7 +173,7 @@ h1{
  .pages button.num:hover,
  .pages button:first-child:hover,
  .pages button:last-child:hover{
-   color: #fff;
+   color: aliceblue;
    background: #3e8e41;
  }
 .num.active{
@@ -222,9 +227,11 @@ input:focus
    flex-direction: row;
    align-items: center;
    border: 1px solid black;
+   padding-top: .2rem;
    margin:1rem;
-   max-width: 43rem;
-   max-height: 24rem;
+   max-width: 45rem;
+   max-height: 25rem;
+   box-shadow: 5px 5px 15px 2px rgba(0,0,0,.3);
 }
 .card-cover{
    display: flex;
@@ -241,7 +248,7 @@ input:focus
 }
 .card-img{
    width: 15rem;
-   height: 24rem;
+   height: 25rem;
 
 }
 
@@ -265,6 +272,7 @@ input:focus
    margin: 0;
    margin-bottom: .5rem;
    font-size: 2rem;
+   font-family: 'Roboto';
 }
 .summary{
    max-height:13rem ;
