@@ -1,18 +1,20 @@
 let totalPages;
-let pages = document.querySelector(".pages");
 
 let url = {
-  index:`https://api.jikan.moe/v4/anime?type=tv,movie,ova,special`,
-  genre:`https://api.jikan.moe/v4/anime`,
-}
+  current: null,
+  index: `https://api.jikan.moe/v4/anime?`,
+  tv: `&type=tv`,
+  movie: `&type=movie`,
+  genre: `&genres=`,
+};
 
-const displayAnime = (url, page) => { 
-    url += page
-  
+const displayAnime = (url, page) => {
+  url += page;
+  url.current = url;
   $.get(url, (data) => {
     console.log(url);
     console.log("api response", data);
-    totalPages = data.pagination.last_visible_page
+    totalPages = data.pagination.last_visible_page;
   }).done((res) => {
     const show = res.data;
     const arrayIterator = (key1, key2) => {
@@ -26,9 +28,8 @@ const displayAnime = (url, page) => {
       }
       return output;
     };
-    let time = 0;
     let i = 1;
-    $(".display-content").empty()
+    $(".display-content").empty();
     for (anime of show) {
       let themes = "";
       if (anime.themes) {
@@ -46,64 +47,93 @@ const displayAnime = (url, page) => {
       if (anime.trailer.url) {
         $trailer =
           $(`<a class="trailer" href="${anime.trailer.url}" target="_blank">
-          Trailer
+          Watch Trailer
         </a>`);
+      }
+      let summary;
+      if (anime.synopsis && anime.synopsis.length > 150) {
+        summary = anime.synopsis.substring(0, 550).concat("...");
+      } else {
+        summary = anime.synopsis;
       }
       let $result = $(`
             <div class="card" id=${i}>
-            <div class="card-cover">
-            <a class="link" href="${anime.url}" target="_blank">
-            <img
-            src="${anime.images.jpg.image_url}"
-            alt=""
-            class="card-img"
-            />
-            </a>
-            </div>
-            <div class="card-info">
-            <h2 class="anime title">${anime.title_english}</h2>
-            <h3 class="theme">${themes}</h3>
-            <h4 class="genre">${genre}</h4>
-            <p class="summary">
-            ${anime.synopsis}
-            </p>
-            <p class="type">${anime.type}<span>Score: ${anime.score}</span></p>
-            </div>
+              <div class="card-cover">
+                <img src="${anime.images.jpg.image_url}" alt="" class="card-img"/>
+              </div>
+              <div class="card-info">
+                <h2 class="anime title">${anime.title_english}</h2>
+                <span class="genre">${genre}</span>
+                <div class='card-demo'>
+                  <p class="type">${anime.type}<span>Score: ${anime.score}</span></p>
+                </div>
+                <div class='card-mid'>
+                  <p class="summary">${summary}</p>
+                  <a class="link" href="${anime.url}" target="_blank">Read More..</a>
+                </div>
+                <div class='card-bot'>
+                  <button class='fav'><i class="fa-regular fa-star"></i></button>
+                </div>
+              </div>
             </div>
             `);
-      
+
       $result.appendTo(".display-content");
-      if (anime.trailer.url) $(`#${i} .card-info`).append($trailer);
-      $(".card").hide().fadeIn(time);
-      time += 300;
+      if (anime.trailer.url) $(`#${i} .card-bot`).prepend($trailer);
       i++;
     }
   });
-    
 };
 
-// PAGINATION
+// FAVORITE
+// $('.fav').on('mouseover',(e)=>{
+//   console.log('hi')
+// $('.fav').addClass('fa-solid')
+// })
 
-const pageS = document.querySelector('#pageSearch')
-$('#pageS').on('submit',(e)=>{
-  e.preventDefault()
-  pagination(totalPages,pageS.valueAsNumber)
-  pageS.value = ''
-})
-function pagination(totalPages, page , query) {
+// PAGINATION
+let pages1 = document.querySelector(".pages.one");
+let pages2 = document.querySelector(".pages.two");
+
+const pageS1 = document.querySelectorAll(".pageSearch")[0];
+const pageS2 = document.querySelectorAll(".pageSearch")[1];
+$(".pageSearch").on("focus", (e) => {
+  $(".pageS").addClass("focused");
+  $(".icon").addClass("focused");
+});
+$(".pageSearch").on("focusout", (e) => {
+  $(".pageS").removeClass("focused");
+  $(".icon").removeClass("focused");
+});
+
+$(".pageS.one").on("submit", (e) => {
+  e.preventDefault();
+  pagination(totalPages, pageS1.valueAsNumber);
+  pageS1.value = "";
+  $(".pageS").removeClass("focused");
+  $(".icon").removeClass("focused");
+});
+$(".pageS.two").on("submit", (e) => {
+  e.preventDefault();
+  pagination(totalPages, pageS2.valueAsNumber);
+  pageS2.value = "";
+  $(".pageS").removeClass("focused");
+  $(".icon").removeClass("focused");
+});
+function pagination(totalPages, page, addquery) {
   let btn = "";
   let beforePages = page - 1;
   let afterPages = page + 1;
   let activeBtn;
   if (page > 1) {
-      btn += `<button class='prev' onclick=pagination(totalPages,${page - 1})>
+    btn += `<button class='prev btn' onclick=pagination(totalPages,${page - 1})>
    <i class="fa-solid fa-angle-left"></i><span>Prev</span>
  </button>`;
   }
   if (page > 2) {
-    btn += `<button class="num" data-page=${1}  onclick=pagination(totalPages,${1})>1</button>`;
+    btn += `<button class="num btn" data-page=${1}  onclick=pagination(totalPages,${1})>1</button>`;
     if (page > 3) {
-      btn += `<button class="dot">...</button> `;
+      btn += `<button class="dot btn">...</button> `;
     }
   }
   // SHOW HOW MANY PAGES BEFORE WHEN AT END
@@ -131,77 +161,114 @@ function pagination(totalPages, page , query) {
     } else {
       activeBtn = "";
     }
-    btn += `<button class="num ${activeBtn}" data-page=${pageLength}  onclick=pagination(totalPages,${pageLength})>${pageLength}</button>`;
+    btn += `<button class="num btn ${activeBtn}" data-page=${pageLength}  onclick=pagination(totalPages,${pageLength})>${pageLength}</button>`;
   }
 
-  if (page < totalPages - 1 ) {
+  if (page < totalPages - 1) {
     if (page < totalPages - 2) {
-      btn += `<button class="dot">...</button> `;
+      btn += `<button class="dot btn">...</button> `;
     }
-    btn += `<button class="num" data-page=${totalPages} onclick=pagination(totalPages,${totalPages})>${totalPages}</button>`;
+    btn += `<button class="num btn" data-page=${totalPages} onclick=pagination(totalPages,${totalPages})>${totalPages}</button>`;
   }
-  if (page < totalPages || page ) {
-      btn += `<button class='next' onclick=pagination(totalPages,${
-        page + 1
-      })> <span>Next</span><i class="fa-solid fa-angle-right"></i></button>`;
+  if (page < totalPages || page) {
+    btn += `<button class='next btn' onclick=pagination(totalPages,${
+      page + 1
+    })> <span>Next</span><i class="fa-solid fa-angle-right"></i></button>`;
   }
-  pages.innerHTML = btn;
-  let pageQ = `&page=${page}`
-  if(url.index.length < url.genre.length){
-    displayAnime(url.genre, pageQ)
-  }else{
-    displayAnime(url.index, pageQ)
+  pages1.innerHTML = btn;
+  pages2.innerHTML = btn;
+  let pageQ = `&page=${page}`;
+  if (url.genre && !addquery) {
+    displayAnime(url.index + url.genre, pageQ);
+  } else if (addquery && url.genre) {
+    displayAnime(url.index + url.genre + addquery, pageQ);
+  } else if (addquery) {
+    displayAnime(url.index + addquery, pageQ);
+  } else {
+    displayAnime(url.index, pageQ);
+  }
+  if (url.genre === `&genres=`) {
+    $(".filterA").addClass("checked");
+    $(".filter").removeClass("checked");
   }
 }
-pagination(totalPages,1)
+pagination(totalPages, 1);
 // Changing url based on page
 // On click we get page number and pass in as url
 // how do we keep genre and add page number
-// 
+//
 // function changePage(page,url){
 
 // }
 
-
 // SEARCH
 let query = "";
-let dropdown = document.querySelector('.dropdown')
+let dropdown = document.querySelector(".dropdown");
 dropdown.addEventListener("click", (e) => {
-  if(e.target.classList.contains('dropdown')){}
   const data = e.target.dataset.genre;
   const removeGenre = (data) => {
-    const start = query.indexOf(data);
+    const urlstart = url.genre.indexOf(data);
     const end = data.length;
-    const newQ = query.split("");
-    newQ.splice(start, end);
-    query = newQ.join("");
+    const newG = url.genre.split("");
+    newG.splice(urlstart, end);
+    url.genre = newG.join("");
   };
-
-  if (e.target.classList.contains("dropBtn")) {
-    if (query.includes(data)) {
-      removeGenre(data);
-    } else {
-      const dataArr = data.split("");
-      const q = query.split("");
-      const newQ = dataArr.concat(q);
-      query = newQ.join("");
+  if (e.target.classList.contains("filterT")) {
+    let id = e.target.id;
+    if (id === "tv") {
+      $(" #tv").toggleClass("checked");
+      $(" #movie").removeClass("checked");
+      console.log(query, "when tv checnked");
+      
+      if (query === url.tv) {
+        query = ''
+        pagination(totalPages, 1);
+      } else {
+        query = url.tv;
+        pagination(totalPages, 1, url.tv);
+      }
     }
-    $(".dropdown-content").toggle();
+    if (id === "movie") {
+      $(" #movie").toggleClass("checked");
+      $(" #tv").removeClass("checked");
+      if (query === url.movie) {
+        query = ''
+        pagination(totalPages, 1);
+      } else {
+        query = url.movie;
+        pagination(totalPages, 1, url.movie);
+      }
+    }
+  }
+  if (e.target.classList.contains("filterA")) {
+    url.genre = `&genres=`;
+    $(".filterA").toggleClass("checked");
+    $(".filter").removeClass("checked");
+    pagination(totalPages, 1, query);
   }
   if (e.target.classList.contains("filter")) {
     let id = e.target.id;
-    if (query.includes(data)) {
+    if (url.genre.includes(data)) {
       removeGenre(data);
-      $(`#${id} .checked`).hide();
+      $(`#${id} `).removeClass("checked");
+      pagination(totalPages, 1, query);
     } else {
-      query += `${data}`;
-      $(`#${id} .checked`).show();
+      url.genre += `${data}`;
+      $(".filterA").removeClass("checked");
+      $(`#${id} `).addClass("checked");
+      pagination(totalPages, 1, query);
+      console.log(query, "after tv checnked");
     }
-    $(".display-content").empty();
-
-    console.log(query);
-    url.genre = url.index+query
-    pagination(totalPages,1)
   }
 });
-// displayAnime();
+
+// STICKY NAVBAR
+const navbar = document.querySelector(".dropdown");
+let sticky = navbar.offsetTop;
+onscroll = () => {
+  if (scrollY >= sticky) {
+    navbar.classList.add("sticky");
+  } else {
+    navbar.classList.remove("sticky");
+  }
+};

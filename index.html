@@ -21,58 +21,46 @@
     <div class="container main">
       <header class="header">
         <h1>Anime Finder</h1>
-      </header>
-      <nav class="nav">
-        <div id="genres" class="dropdown">
-          <button class="dropBtn genres" data-genre="&genres=">
-            <span>Genres</span> <i class="fa-solid fa-angle-down"></i>
-          </button>
-          <div class="dropdown-content">
-            <a class="filter" id="g1" data-genre="1,"
-              ><i class="fa-regular fa-circle-check checked"></i>Action</a
-            >
-            <a class="filter" id="g2" data-genre="2,"
-              ><i class="fa-regular fa-circle-check checked"></i>Adventure</a
-            >
-            <a class="filter" id="g3" data-genre="4,"
-              ><i class="fa-regular fa-circle-check checked"></i>Comedy</a
-            >
-            <a class="filter" id="g4" data-genre="8,"
-              ><i class="fa-regular fa-circle-check checked"></i>Drama</a
-            >
-            <a class="filter" id="g5" data-genre="10,"
-              ><i class="fa-regular fa-circle-check checked"></i>Fantasy</a
-            >
-            <a class="filter" id="g6" data-genre="14,"
-              ><i class="fa-regular fa-circle-check checked"></i>Horror</a
-            >
-            <a class="filter" id="g7" data-genre="7,"
-              ><i class="fa-regular fa-circle-check checked"></i>Mystery</a
-            >
-            <a class="filter" id="g8" data-genre="24,"
-              ><i class="fa-regular fa-circle-check checked"></i>Sci-Fi</a
-            >
-            <a class="filter" id="g9" data-genre="37,"
-              ><i class="fa-regular fa-circle-check checked"></i>Supernatural</a
-            >
-            <a class="filter" id="g10" data-genre="41,"
-              ><i class="fa-regular fa-circle-check checked"></i>Suspense</a
-            >
+        <nav class="nav">
+          <div id="genres" class="dropdown" data-genre="&genres=">
+            <div class="dropdown-content">
+              <a class="genre">Genres</a>
+              <a class="filterA" id="g0" href='#'>All</a>
+              <a class="filter" id="g1" href='#' data-genre="1,">Action</a>
+              <a class="filter" id="g2" href='#' data-genre="2,">Adventure</a>
+              <a class="filter" id="g3" href='#' data-genre="4,">Comedy</a>
+              <a class="filter" id="g4" href='#' data-genre="8,">Drama</a>
+              <a class="filter" id="g5" href='#' data-genre="10,">Fantasy</a>
+              <a class="filter" id="g6" href='#' data-genre="14,">Horror</a>
+              <a class="filter" id="g7" href='#' data-genre="7,">Mystery</a>
+              <a class="filter" id="g8" href='#' data-genre="24,">Sci-Fi</a>
+              <a class="filter" id="g9" href='#' data-genre="37,">Supernatural</a>
+              <a class="filter" id="g10" href='#' data-genre="41,">Suspense</a>
+              <a class="filterT" id="tv" href='#'>TV</a>
+              <a class="filterT" id="movie" href='#' >Movies</a>
+              <a href='#' ><i class="fa-solid fa-arrow-up"></i></a>
+            </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      </header>
+
       <div class="display">
         <h2 class="display-title">Browse Anime</h2>
         <div class="pagination">
-          <div class="pages">
-          </div>
-          <form action="" id="pageS">
-            <input type="number" id="pageSearch" placeholder="Enter Page">
-            <i class="fa-solid fa-magnifying-glass"></i>
-
+          <div class="pages one"></div>
+          <form action="" class="pageS one">
+            <input type="number" min="1" class="pageSearch" placeholder="Pg. #" />
+            <i class="fa-solid fa-magnifying-glass icon"></i>
           </form>
         </div>
         <div class="display-content"></div>
+        <div class="pagination">
+          <div class="pages two"></div>
+          <form action="" class="pageS two">
+            <input type="number" min="1"  class="pageSearch" placeholder="Pg. #" />
+            <i class="fa-solid fa-magnifying-glass icon"></i>
+          </form>
+        </div>
       </div>
       <div class="side"></div>
       <footer class="footer"></footer>
